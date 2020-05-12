@@ -23,13 +23,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'figf%$fi!q$g2#$4++6r!fus2%7)3$d$jppy3!(yh^g)&tgbxg'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
         "localhost",
         "127.0.0.1",
         "[::1]",
         "testserver",
+        "*",
 ]
 
 
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sorl.thumbnail',
+    "debug_toolbar",
 
 ]
 
@@ -58,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = 'yatube.urls'
@@ -153,3 +156,7 @@ CACHES = {
                 'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         }
 }
+
+INTERNAL_IPS = [
+        "127.0.0.1",
+]

@@ -28,7 +28,8 @@ class TestStringMethods(TestCase):
 
         def test_Post_check(self):
                 self.client.login(username="den", password="1337228Dio")
-                post_created = Post.objects.create(text="Some text", author=self.user)
+                self.client.post("/new/", {"text" : "Some text"}, follow=True)
+                post_created = Post.objects.get(text="Some text", author=self.user)
                 resp1 = self.client.get("")
                 self.assertContains(resp1, "Some text")
                 resp2 = self.client.get(reverse("profile", kwargs={"username" : self.user.username}))
@@ -39,7 +40,7 @@ class TestStringMethods(TestCase):
         def test_Edit_check(self):
                 self.client.login(username="den", password="1337228Dio")
                 post_created = Post.objects.create(text="Some text", author=self.user)
-                self.client.post(reverse("post_edit", kwargs={"username" : self.user.username, "post_id" : post_created.id}), {"text" : "New Text"}, folloe=True)
+                self.client.post(reverse("post_edit", kwargs={"username" : self.user.username, "post_id" : post_created.id}), {"text" : "New Text"}, follow=True)
                 resp1 = self.client.get("")
                 self.assertContains(resp1, "New Text")
                 resp2 = self.client.get(reverse("profile", kwargs={"username" : self.user.username}))
@@ -113,4 +114,12 @@ class TestStringMethods(TestCase):
                 self.client.logout()
                 resp1 = self.client.get(reverse("add_comment", kwargs={"username" : self.author.username, "post_id" : post.id}))
                 self.assertEquals(resp1.status_code, 302)
+
+        def test_create_comments(self):
+                self.client.login(username="farthur", password="102938Far")
+                self.client.post("/new/", {"text" : "follow me!"})
+                post = Post.objects.get(text="follow me!", author=self.author)
+                resp = self.client.post(reverse(
+                        "add_comment", kwargs={"username" : self.author.username, "post_id" : post.id}), {"text" : "Comment text"}, follow=True)
+                self.assertContains(resp, "Comment text")
                 
